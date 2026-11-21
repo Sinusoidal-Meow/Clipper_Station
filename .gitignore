@@ -1,0 +1,73 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Build/dist
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Environment files (keep .env.example)
+.env
+.env.local
+*.env.local
+
+# Secrets and credentials
+secrets/
+secret/
+*.pem
+*.cer
+*.crt
+*.p12
+*.key
+credentials.json
+google-{credentials,cloud}.json
+
+# Test cache
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# IDE and editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# Obsidian
+.obsidian/
+
+# Database files
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
+# All db files anywhere
+**/data/*.db
+**/data/*.sqlite
+
+# Exported media files
+exports/
+/media/
+/clips/
+
+# Session files
+session-continue-id.md
+current-status.md
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -68,6 +68,10 @@ exports/
 session-continue-id.md
 current-status.md
 
+# Claude local settings (contains sensitive paths)
+.claude/settings.local.json
+/.claude/settings.local.json
+
 # OS files
 .DS_Store
 Thumbs.db

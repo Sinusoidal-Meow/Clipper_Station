@@ -1,0 +1,203 @@
+# =====================================================================
+# requirements.txt  --  ClipForge (GTA) + Clip Operations Center (clip_it)
+# Built from FRIEND_SETUP_AND_ARCHITECTURE.md (audited 20 Nov 2026)
+#
+# NOTE: pip can only install Python packages. Everything else the guide
+# mentions (system tools, repos, project files, folders, keys) is listed
+# below as a CHECKLIST in comments so nothing is forgotten.
+# The guide has no exact dependency list, so the packages are inferred
+# from the described features. If a repo already ships its own
+# requirements.txt, prefer that one.
+# =====================================================================
+
+
+# =====================================================================
+# PART 1 - SYSTEM TOOLS (install first, NOT via pip)  [Windows 10/11 64-bit]
+# =====================================================================
+#   winget install Python.Python.3.12        # Python 3.10+ (3.12 recommended)
+#   winget install OpenJS.NodeJS.LTS         # JS runtime needed by yt-dlp for YouTube
+#   winget install Gyan.FFmpeg               # must include libass (captions)
+#   winget install Git.Git                   # to clone repos
+#   (optional) cloudflared                   # Cloudflare Tunnel, Instagram publishing
+#                                            #   cloudflared tunnel --url http://127.0.0.1:8765
+#   (optional) NVIDIA GPU + CUDA drivers     # faster Whisper; or use free Google Colab GPU
+#
+# Hardware: GTA >= 4 GB RAM; clip_it 8 GB RAM recommended; plenty of disk
+# space for live chunks, downloaded media, Whisper models and exports.
+
+
+# =====================================================================
+# PART 2 - PROJECT LAYOUT (your own folders; NOT pip-installable)
+# =====================================================================
+# C:\path\to\GTA        (GTA ClipForge, based on jatinvaira/clipforge)
+#   clipforge/          Python package  -> uvicorn clipforge.server:app
+#   config.yaml         main configuration
+#   requirements.txt    this file / its own
+#   run.sh              macOS/Linux/Git Bash launcher (on Windows use python -m uvicorn)
+#   clips/  data/live/  exports/  secrets/  data/      (runtime folders)
+#   Server: http://127.0.0.1:8800
+#
+# C:\path\to\clip_it    (Clip Operations Center: brands "gta" + "podcast")
+#   clipops/            Python package  -> python -m clipops serve
+#   tests/  docs/  data/  exports/<brand>/
+#   .env.example  ->  copy to  .env   (Copy-Item .env.example .env)
+#   start_dashboard.bat
+#   THIRD_PARTY_LICENSES.md   (update if you ever copy upstream code)
+#   Dashboard: http://127.0.0.1:8765
+#
+# NEVER commit or share: .env, secrets/, tokens, downloaded footage, generated clips.
+
+
+# =====================================================================
+# PART 3 - PYTHON PACKAGES (pip install -r requirements.txt)
+# =====================================================================
+# Create the venv first:
+#   py -3.12 -m venv .venv
+#   .\.venv\Scripts\python.exe -m pip install --upgrade pip
+#   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+
+# --- Web server / dashboard ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+jinja2>=3.1
+pydantic>=2.6
+
+# --- CLI (python -m clipops serve | run | connect | gen-key) ---
+typer>=0.12
+rich>=13.7
+
+# --- Config and environment (.env, config.yaml) ---
+python-dotenv>=1.0
+pyyaml>=6.0
+
+# --- Downloading VODs / live streams (YouTube, Twitch, Kick) ---
+yt-dlp>=2024.4.9
+requests>=2.31
+httpx>=0.27
+
+# --- Local transcription (no API key; model downloads on first run) ---
+faster-whisper>=1.0
+
+# --- Audio / signal detection (loudness spikes, jumps, hype keywords) ---
+numpy>=1.26
+scipy>=1.12
+soundfile>=0.12
+
+# --- Video / image (facecam detection, 9:16 layout, thumbnails) ---
+opencv-python-headless>=4.9
+pillow>=10.2
+ffmpeg-python>=0.2
+
+# --- Scheduling, background jobs, live rolling buffer ---
+apscheduler>=3.10
+
+# --- Token encryption (TOKEN_ENCRYPTION_KEY via `clipops gen-key`) ---
+cryptography>=42.0
+
+# --- YouTube Data API v3 + YouTube Analytics API (OAuth "Desktop app") ---
+google-api-python-client>=2.120
+google-auth>=2.28
+google-auth-oauthlib>=1.2
+google-auth-httplib2>=0.2
+
+# --- Optional: Gemini (better titles, descriptions, humour/hype judging) ---
+google-genai>=0.3
+
+# --- Testing (expected result: 175 passed, 2 FastAPI on_event warnings) ---
+pytest>=8.0
+pytest-asyncio>=0.23
+
+# --- Optional extras (uncomment if needed) ---
+# chat-downloader>=0.2        # Twitch/YouTube chat-replay signals
+# torch                       # GPU Whisper; install per pytorch.org instructions
+# onnxruntime>=1.17
+
+# --- Optional: install the local projects as packages (only if each has a pyproject.toml/setup.py) ---
+# -e C:\path\to\GTA
+# -e C:\path\to\clip_it
+
+
+# =====================================================================
+# PART 4 - OPTIONAL GIT-BASED INSTALL (main code base for GTA project)
+# =====================================================================
+# Only needed if you do NOT already have the GTA folder. The local GTA
+# project is built on this MIT-licensed repo. Installing it here would
+# clash with a local `clipforge` package, so keep it commented out.
+# git+https://github.com/jatinvaira/clipforge.git        # MIT
+# (or:  git clone https://github.com/jatinvaira/clipforge.git)
+
+
+# =====================================================================
+# PART 5 - REFERENCE REPOSITORIES (git clone to study; NOT dependencies)
+# =====================================================================
+# The guide says clipops/ was written from scratch; these gave ideas only.
+#
+# -- Main benchmarks --
+#   https://github.com/jatinvaira/clipforge              MIT        codebase for GTA project
+#   https://github.com/mutonby/openshorts                MIT        review-then-post, captions
+#   https://github.com/FujiwaraChoki/supoclip            RESTRICTED reference only (no commercial use w/o permission)
+#   https://github.com/sherlock-dev-ai/Clipify-AI-Video-Clipper-FREE   CC BY-NC 4.0, reference only
+#   https://github.com/harry0703/MoneyPrinterTurbo       MIT        scripts, voiceover, subtitles
+#   https://github.com/OpenMontageInc/OpenMontage        AGPL-3.0   ideas only
+#
+# -- Clipping-quality references --
+#   https://github.com/fralapo/clippyme
+#   https://github.com/utkualsir/sharkyclips
+#   https://github.com/Sudarshan-101/ClipForge
+#   https://github.com/artbyjazi/autoclip
+#   https://github.com/mehbul/chopify
+#   https://github.com/ghost1412/shortsflow
+#   https://github.com/T3-Venture-Labs-Limited/clipyyy
+#   https://github.com/darryl-17/dawassi-ai-clipper
+#
+# -- Credited by GTA ClipForge README (ideas only) --
+#   https://github.com/R3LAMP4GO/clipping-gta-6
+#   https://github.com/ColinGPT9/clips-studio
+#   https://github.com/lxgicstudios/lxgic-clipper
+#
+# -- Publishing / analytics references --
+#   https://github.com/getopenpost/openpost              AGPL, architecture reference only
+#   https://github.com/azeemkafridi/openpublish          AGPL, architecture reference only
+#   https://github.com/RolePlayingTech/social-media-manager
+#   https://github.com/abhishekraj007/social-scheduler
+#
+# -- Prompt / content references --
+#   https://github.com/Ootto-AI/claude-content-skills    hooks, virality checklist, prompts
+#
+# If you ever copy code from any of these, record in THIRD_PARTY_LICENSES.md:
+# repo URL, source file/path, license, copyright notice, exact changes.
+
+
+# =====================================================================
+# PART 6 - .env VARIABLES (copy .env.example -> .env, never share)
+# =====================================================================
+#   GEMINI_API_KEY=            optional, Gemini enhancement
+#   YOUTUBE_CLIENT_ID=         Google Cloud OAuth client (Desktop app)
+#   YOUTUBE_CLIENT_SECRET=
+#   TOKEN_ENCRYPTION_KEY=      from:  python -m clipops gen-key
+#   PUBLIC_MEDIA_BASE_URL=     https://<your-tunnel>.trycloudflare.com (Instagram)
+#   CLIPOPS_PUBLISH_ENABLED=0  keep 0 until manual test passes, then 1
+#
+# Accounts / services to set up (all optional for basic local clipping):
+#   - Google Cloud project: enable YouTube Data API v3 + YouTube Analytics API
+#   - Instagram Professional account + Meta/Instagram app with publishing permission
+#   - Cloudflare Tunnel (cloudflared) for public HTTPS media URL
+#
+# Connect accounts:
+#   python -m clipops connect youtube   --brand gta     --label "GTA channel"
+#   python -m clipops connect youtube   --brand podcast --label "Podcast channel"
+#   python -m clipops connect instagram --brand gta     --label "GTA Reels"
+
+
+# =====================================================================
+# PART 7 - RUN COMMANDS
+# =====================================================================
+#   GTA:       .\.venv\Scripts\python.exe -m uvicorn clipforge.server:app --host 127.0.0.1 --port 8800
+#   clip_it:   .\.venv\Scripts\python.exe -m clipops serve      (or start_dashboard.bat)
+#   Tests:     .\.venv\Scripts\python.exe -m pytest -q
+#   GTA test:  python -m clipops run "URL" --brand gta     --clips 5 --export-all
+#   Podcast:   python -m clipops run "URL" --brand podcast --clips 5 --export-all
+#
+# Only use footage you own or have permission to use. Start uploads as
+# private/unlisted and keep manual approval on.

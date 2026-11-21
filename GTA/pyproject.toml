@@ -1,0 +1,24 @@
+[project]
+name = "clipforge"
+version = "1.0.0"
+description = "GTA ClipForge - Gaming Stream Clip Operations"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "typer[all]",
+    "pydantic",
+    "python-dotenv",
+    "pyyaml",
+    "pillow",
+    "faster-whisper",
+    "pytube",
+    "twitchaio",
+]
+
+[tool.pscribe]
+source_dir = "clipforge"
+
+[tool.setuptools.packages.find]
+include = ["clipforge*"]
